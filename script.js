@@ -19,8 +19,8 @@ const products = {
             { component: 'Monitor', specification: 'LG 27" 100Hz Pure Colour', value: '' }
         ],
         alternatives: [
-            { name: 'Office Pro', price: '₹89,999', savings: 'Save ₹30,000', id: 'office-pro' },
-            { name: "Creator's Rig (RTX 4060)", price: '₹69,999', savings: 'Save ₹10,000', id: 'creators-rig' }
+            { name: 'Ultimate Workstation', price: '₹89,999', savings: 'Save ₹30,000', id: 'office-pro' },
+            { name: 'Creator Pro', price: '₹69,999', savings: 'Save ₹10,000', id: 'creators-rig' }
         ]
     },
     'creators-rig': {
@@ -43,7 +43,7 @@ const products = {
         ],
         alternatives: [
             { name: 'Gaming Beast', price: '₹59,999', savings: 'Save ₹10,000', id: 'gaming-beast' },
-            { name: 'Office Pro', price: '₹89,999', savings: 'Save ₹20,000', id: 'office-pro' }
+            { name: 'Ultimate Workstation', price: '₹89,999', savings: 'Save ₹20,000', id: 'office-pro' }
         ]
     },
     'office-pro': {
@@ -65,7 +65,7 @@ const products = {
             { component: 'Power Supply', specification: 'Corsair VS650', value: '' }
         ],
         alternatives: [
-            { name: 'Budget Builder', price: '₹79,999', savings: 'Save ₹10,000', id: 'budget-builder' },
+            { name: 'Value Builder', price: '₹79,999', savings: 'Save ₹10,000', id: 'budget-builder' },
             { name: 'Gaming Beast', price: '₹59,999', savings: 'Save ₹30,000', id: 'gaming-beast' }
         ]
     },
@@ -89,7 +89,7 @@ const products = {
             { component: 'Monitor', specification: 'GIGABYTE M27Q 27" 240Hz', value: '' }
         ],
         alternatives: [
-            { name: 'Office Pro', price: '₹89,999', savings: 'Upgrade for ₹10,000', id: 'office-pro' },
+            { name: 'Ultimate Workstation', price: '₹89,999', savings: 'Upgrade for ₹10,000', id: 'office-pro' },
             { name: 'Gaming Beast', price: '₹59,999', savings: 'Upgrade for ₹20,000', id: 'gaming-beast' }
         ]
     }
@@ -98,6 +98,46 @@ const products = {
 // DOM Elements
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
+const revealElements = document.querySelectorAll('.reveal');
+
+
+// Debounce function for better performance
+function debounce(func, wait = 20, immediate = true) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        const later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+}
+
+// Scroll Animation Function
+function revealOnScroll() {
+    const windowHeight = window.innerHeight;
+    const revealPoint = 150;
+    
+    revealElements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        
+        if (elementTop < windowHeight - revealPoint) {
+            element.classList.add('active');
+        } else {
+            element.classList.remove('active');
+        }
+    });
+}
+
+// Add scroll event listener with debounce for better performance
+window.addEventListener('scroll', debounce(revealOnScroll));
+
+// Initial check on page load
+window.addEventListener('load', revealOnScroll);
 const modal = document.getElementById('productModal');
 const modalContent = document.getElementById('modalContent');
 const contactForm = document.getElementById('contactForm');
@@ -141,15 +181,7 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Navbar background on scroll
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = 'linear-gradient(90deg, #2d0036 0%, #a259c6 100%)';
-    } else {
-        navbar.style.background = 'linear-gradient(90deg, #2d0036 0%, #a259c6 100%)';
-    }
-});
+// Navbar background on scroll - removed redundant code since both conditions set the same background
 
 // Show product details modal
 function showProductDetails(productId) {
